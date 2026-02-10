@@ -12,11 +12,11 @@ phases:
   pre_build:
     commands:
       - echo "Installing dependencies..."
-      - pip install -r "AWS/AWS CICD/requirements.txt"
+      - pip install -r "AWS/AWS_CICD/requirements.txt"
   build:
     commands:
       - echo "Running tests..."
-      - cd "AWS/AWS CICD"
+      - cd "AWS/AWS_CICD"
       - echo "Building Docker image..."
       - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY_URL"
       - docker build -t "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/AWS-CICD:latest" .
@@ -27,4 +27,4 @@ phases:
 artifacts:
   files:
     - '**/*'
-  base-directory: ../AWS CICD
+  base-directory: ../AWS_CICD
