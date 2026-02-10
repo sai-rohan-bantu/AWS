@@ -1,1 +1,30 @@
+version: 0.2
 
+env:
+  parameter-store:
+    DOCKER_REGISTRY_USERNAME: docker-credentials_username
+    DOCKER_REGISTRY_PASSWORD: docker-credentials_password
+    DOCKER_REGISTRY_URL: docker-registry_url
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+  pre_build:
+    commands:
+      - echo "Installing dependencies..."
+      - pip install -r "AWS/AWS CICD/requirements.txt"
+  build:
+    commands:
+      - echo "Running tests..."
+      - cd "AWS/AWS CICD"
+      - echo "Building Docker image..."
+      - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY_URL"
+      - docker build -t "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/AWS-CICD:latest" .
+      - docker push "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/AWS-CICD:latest"
+  post_build:
+    commands:
+      - echo "Build completed successfully!"
+artifacts:
+  files:
+    - '**/*'
+  base-directory: ../AWS CICD
